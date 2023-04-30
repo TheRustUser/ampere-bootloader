@@ -1,0 +1,17 @@
+[package]
+name = "ampere-bootloader"
+version = "0.1.0-rc0"
+authors = [ "Hyun Ho Bae" ]
+edition = "2021"
+description = "An Experimental Bootloader Written in Rust"
+documentation = "https://docs.rs/ampere-bootloader"
+readme = "./README.md"
+repository = "https://github.com/TheRustUser/ampere-bootloader"
+license-file = "./LICENSE.md"
+keywords = [ "osdev" ]
+categories = [ "Operating System" ]
+
+[dependencies]
+uefi = { version = "0.20.0", features = [ "alloc", "global_allocator" ] }
+uefi-services = "0.17.0"
+elf = "0.7.2"
