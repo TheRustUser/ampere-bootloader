@@ -4,8 +4,9 @@
 extern crate alloc;
 
 use uefi::{Status, Handle, table::{Boot, SystemTable, boot::{MemoryDescriptor, MemoryType}},
-    prelude::entry, table::{cfg, boot::{OpenProtocolParams, OpenProtocolAttributes, SearchType}}, proto::console::gop::GraphicsOutput};
+    prelude::entry, table::{cfg, boot::{OpenProtocolParams, OpenProtocolAttributes, SearchType}}, proto::console::gop::GraphicsOutput, data_types::PhysicalAddress};
 use uefi_services::{init, println};
+use xmas_elf::{ElfFile, header, program};
 
 use core::{mem, slice};
 
@@ -64,6 +65,16 @@ fn efi_main(
     let (system_table, memory_map) = system_table.exit_boot_services();
 
     static KERNEL: &[u8] = include_bytes!("../../target/x86_64-unknown-ampere/debug/ampere-kernel");
+
+    let elf_file = ElfFile::new(KERNEL).unwrap();
+    header::sanity_check(&elf_file).unwrap();
+
+    for segment in elf_file.program_iter() {
+        program::sanity_check(segment, &elf_file).unwrap();
+        if let program::Type::Load = segment.get_type().unwrap() {
+            todo!();
+        }
+    }
 
     loop {}
 }
